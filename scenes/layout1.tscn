@@ -1,0 +1,193 @@
+[gd_scene load_steps=17 format=1]
+
+[ext_resource path="res://scenes/layout1.gd" type="Script" id=1]
+[ext_resource path="res://scenes/left_wall.gd" type="Script" id=2]
+[ext_resource path="res://scenes/right_wall.gd" type="Script" id=3]
+[ext_resource path="res://images/top.png" type="Texture" id=4]
+[ext_resource path="res://images/bottom.png" type="Texture" id=5]
+[ext_resource path="res://images/platform.png" type="Texture" id=6]
+[ext_resource path="res://scenes/1floor.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/2floor.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/3floor.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/4floor.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/5floor.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/monster.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=13]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 4, 92 )
+
+[sub_resource type="RectangleShape2D" id=2]
+
+custom_solver_bias = 0.0
+extents = Vector2( 96, 10 )
+
+[sub_resource type="NavigationPolygon" id=3]
+
+vertices = Vector2Array( 192, 185, 181, 185, 83, 183, 85, 183, 191, 121, 181, 121, 83, 119, 85, 119, 191, 153, 181, 153, 83, 151, 85, 151, 192, 89, 181, 89, 115, 87, 117, 87, 192, 217, 181, 217, 179, 215, 181, 215, 11, 217, 13, 215, 181, 55, 192, 55, 192, 57, 181, 57, 83, 55, 179, 57, 181, 87, 192, 87, 179, 87, 117, 57, 181, 119, 191, 119, 179, 119, 179, 89, 117, 89, 85, 87, 181, 151, 191, 151, 179, 151, 179, 121, 85, 121, 53, 119, 181, 183, 192, 183, 179, 183, 179, 153, 85, 153, 13, 151, 192, 215, 179, 185, 13, 185, 13, 183, 1, 217, 1, 215, 11, 215, 11, 185, 1, 185, 1, 183, 11, 183, 11, 153, 13, 153, 1, 153, 1, 151, 11, 151, 11, 121, 1, 121, 1, 119, 11, 119, 51, 119, 13, 121, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 53, 89, 83, 57, 1, 57, 1, 55, 83, 153, 117, 119, 115, 119, 115, 89, 85, 89, 83, 121, 115, 57, 85, 57, 83, 89 )
+polygons = [ IntArray( 0, 1, 2, 3 ), IntArray( 4, 5, 6, 7 ), IntArray( 8, 9, 10, 11 ), IntArray( 12, 13, 14, 15 ), IntArray( 16, 17, 18, 19 ), IntArray( 18, 17, 20, 21 ), IntArray( 22, 23, 24, 25 ), IntArray( 26, 22, 25, 27 ), IntArray( 28, 29, 12 ), IntArray( 28, 12, 30 ), IntArray( 25, 28, 30, 27 ), IntArray( 26, 27, 31 ), IntArray( 32, 33, 4 ), IntArray( 32, 4, 34 ), IntArray( 13, 32, 34, 35 ), IntArray( 14, 13, 35 ), IntArray( 14, 35, 36, 37 ), IntArray( 38, 39, 8 ), IntArray( 38, 8, 40 ), IntArray( 5, 38, 40, 41 ), IntArray( 6, 5, 41 ), IntArray( 6, 41, 42, 43 ), IntArray( 44, 45, 0 ), IntArray( 44, 0, 46 ), IntArray( 9, 44, 46, 47 ), IntArray( 10, 9, 47 ), IntArray( 10, 47, 48, 49 ), IntArray( 19, 50, 16 ), IntArray( 1, 19, 18, 51 ), IntArray( 2, 1, 51 ), IntArray( 2, 51, 52, 53 ), IntArray( 20, 54, 55, 56 ), IntArray( 21, 20, 56, 52 ), IntArray( 52, 56, 57, 53 ), IntArray( 57, 58, 59, 60 ), IntArray( 53, 57, 60 ), IntArray( 53, 60, 61, 62 ), IntArray( 61, 63, 64, 65 ), IntArray( 62, 61, 65 ), IntArray( 66, 67, 68, 69 ), IntArray( 66, 69, 70, 71 ), IntArray( 72, 73, 74, 75 ), IntArray( 72, 75, 76, 77 ), IntArray( 78, 79, 80, 26 ), IntArray( 81, 62, 65, 49 ), IntArray( 82, 34, 4 ), IntArray( 82, 4, 83 ), IntArray( 36, 82, 83, 84 ), IntArray( 37, 36, 84 ), IntArray( 37, 84, 85, 76 ), IntArray( 11, 40, 8 ), IntArray( 42, 11, 10, 86 ), IntArray( 43, 42, 86 ), IntArray( 43, 86, 71, 70 ), IntArray( 15, 30, 12 ), IntArray( 31, 15, 14, 87 ), IntArray( 26, 31, 87 ), IntArray( 26, 87, 88 ), IntArray( 78, 26, 88, 37 ), IntArray( 76, 78, 37 ), IntArray( 76, 85, 7, 89 ), IntArray( 3, 46, 0 ), IntArray( 48, 3, 2, 81 ), IntArray( 49, 48, 81 ), IntArray( 71, 49, 65, 66 ), IntArray( 77, 43, 70, 72 ), IntArray( 89, 77, 76 ), IntArray( 6, 89, 7 ), IntArray( 4, 7, 83 ) ]
+outlines = [ Vector2Array( 83, 55, 181, 55, 192, 55, 192, 57, 181, 57, 181, 87, 192, 87, 192, 89, 181, 89, 181, 119, 191, 119, 191, 121, 181, 121, 181, 151, 191, 151, 191, 153, 181, 153, 181, 183, 192, 183, 192, 185, 181, 185, 181, 215, 192, 215, 192, 217, 181, 217, 11, 217, 1, 217, 1, 215, 11, 215, 11, 185, 1, 185, 1, 183, 11, 183, 11, 153, 1, 153, 1, 151, 11, 151, 11, 121, 1, 121, 1, 119, 11, 119, 51, 119, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 83, 57, 1, 57, 1, 55 ), Vector2Array( 179, 57, 179, 87, 117, 87, 117, 57 ), Vector2Array( 85, 57, 115, 57, 115, 87, 85, 87 ), Vector2Array( 53, 89, 83, 89, 83, 119, 53, 119 ), Vector2Array( 85, 89, 115, 89, 115, 119, 85, 119 ), Vector2Array( 117, 89, 179, 89, 179, 119, 117, 119 ), Vector2Array( 13, 121, 83, 121, 83, 151, 13, 151 ), Vector2Array( 85, 121, 179, 121, 179, 151, 85, 151 ), Vector2Array( 13, 153, 83, 153, 83, 183, 13, 183 ), Vector2Array( 85, 153, 179, 153, 179, 183, 85, 183 ), Vector2Array( 13, 185, 179, 185, 179, 215, 13, 215 ) ]
+
+[node name="Layout" type="Node2D"]
+
+script/script = ExtResource( 1 )
+
+[node name="Walls" type="Node2D" parent="."]
+
+[node name="left" type="Area2D" parent="Walls"]
+
+input/pickable = false
+shapes/0/shape = SubResource( 1 )
+shapes/0/transform = Matrix32( 1, -0, 0, 1, -3, 132 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+script/script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/left"]
+
+transform/pos = Vector2( -3, 132 )
+shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="right" type="Area2D" parent="Walls"]
+
+transform/pos = Vector2( 196, 0 )
+input/pickable = false
+shapes/0/shape = SubResource( 1 )
+shapes/0/transform = Matrix32( 1, -0, 0, 1, -1, 132 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+script/script = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/right"]
+
+transform/pos = Vector2( -1, 132 )
+shape = SubResource( 1 )
+trigger = false
+_update_shape_index = 0
+
+[node name="Top" type="Sprite" parent="."]
+
+transform/pos = Vector2( 0, 26 )
+texture = ExtResource( 4 )
+centered = false
+
+[node name="Bottom" type="Sprite" parent="."]
+
+transform/pos = Vector2( 0, 224 )
+texture = ExtResource( 5 )
+centered = false
+__meta__ = { "_editor_collapsed":true }
+
+[node name="bottom_body" type="StaticBody2D" parent="Bottom"]
+
+transform/pos = Vector2( 0, 0.5 )
+input/pickable = false
+shapes/0/shape = SubResource( 2 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 96, 10 )
+shapes/0/trigger = false
+collision/layers = 2
+collision/mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
+__meta__ = { "_editor_collapsed":true }
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bottom/bottom_body"]
+
+transform/pos = Vector2( 96, 10 )
+shape = SubResource( 2 )
+trigger = false
+_update_shape_index = 0
+
+[node name="Platforms" type="Node2D" parent="."]
+
+transform/pos = Vector2( 1, 0 )
+__meta__ = { "_editor_collapsed":true }
+
+[node name="P1" type="Sprite" parent="Platforms"]
+
+transform/pos = Vector2( 0, 64 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="P2" type="Sprite" parent="Platforms"]
+
+transform/pos = Vector2( 0, 96 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="P3" type="Sprite" parent="Platforms"]
+
+transform/pos = Vector2( 0, 128 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="P4" type="Sprite" parent="Platforms"]
+
+transform/pos = Vector2( 0, 160 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="P5" type="Sprite" parent="Platforms"]
+
+transform/pos = Vector2( 0, 192 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="Ladders" type="Node2D" parent="."]
+
+__meta__ = { "_editor_collapsed":true }
+
+[node name="1floor" parent="Ladders" instance=ExtResource( 7 )]
+
+transform/pos = Vector2( 52, 96 )
+
+[node name="2floor" parent="Ladders" instance=ExtResource( 8 )]
+
+transform/pos = Vector2( 116, 64 )
+
+[node name="3floor" parent="Ladders" instance=ExtResource( 9 )]
+
+transform/pos = Vector2( 12, 128 )
+
+[node name="4floor" parent="Ladders" instance=ExtResource( 10 )]
+
+transform/pos = Vector2( 84, 64 )
+
+[node name="5floor" parent="Ladders" instance=ExtResource( 11 )]
+
+transform/pos = Vector2( 180, 64 )
+
+[node name="Holes" type="Node2D" parent="."]
+
+[node name="Navigation2D" type="Navigation2D" parent="."]
+
+[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
+
+navpoly = SubResource( 3 )
+enabled = true
+
+[node name="Monsters" type="Node2D" parent="."]
+
+[node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 140, 56 )
+collision/margin = 0.08
+
+[node name="Player" parent="." instance=ExtResource( 13 )]
+
+transform/pos = Vector2( 44, 216 )
+collision/margin = 0.08
+
+
