@@ -33,12 +33,17 @@ func _on_UD_body_enter( body ):
 		body.lf=false
 		var pos=body.get_pos()
 		body.set_pos(Vector2(get_parent().get_pos().x, pos.y))
+		if body.has_method("enable_ray_casts"):
+			body.enable_ray_casts(false)
 
 # LEFT RIGHT ALLOWED
 func _on_UD_body_exit( body ):
 	if body extends player_class or body extends monster_class:
 		body.rf=true
 		body.lf=true
+		if body.has_method("enable_ray_casts"):
+			body.enable_ray_casts(true)
+
 
 # DOWN ALLOWED UP FORBIDDEN
 func _on_D_body_enter( body ):

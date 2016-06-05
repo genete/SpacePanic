@@ -17,6 +17,7 @@ var walk_speed=60
 var fall_speed=walk_speed*4
 var dig_speed=15
 var consumed_motion=0
+var was_facing_a_hole=false
 
 # Up down left right flags
 var uf=false
@@ -100,7 +101,6 @@ func _fixed_process(delta):
 	var collider2=null
 	var hole_collided=null
 	var facing_hole=false
-	var was_facing_a_hole=false
 	if both_colliding:
 		collider1=ray_cast_far.get_collider()
 		collider2=ray_cast_near.get_collider()
@@ -133,6 +133,7 @@ func _fixed_process(delta):
 				lf=false
 	else:
 		if was_facing_a_hole:
+			was_facing_a_hole=false
 		# Restore lf an rf if not facing a hole
 			if lf:
 				rf=true
@@ -275,3 +276,10 @@ func update_scale():
 		scale(Vector2(1,1))
 	if not siding_right:
 		scale(Vector2(-1,1))
+
+func enable_ray_casts(enabled):
+	get_node("ray_cast_near").set_enabled(enabled)
+	get_node("ray_cast_far").set_enabled(enabled)
+	get_node("ray_cast_hole").set_enabled(enabled)
+	get_node("ray_cast_fall1").set_enabled(enabled)
+	get_node("ray_cast_fall2").set_enabled(enabled)

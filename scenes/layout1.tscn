@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=1]
+[gd_scene load_steps=16 format=1]
 
 [ext_resource path="res://scenes/layout1.gd" type="Script" id=1]
 [ext_resource path="res://scenes/left_wall.gd" type="Script" id=2]
@@ -11,8 +11,7 @@
 [ext_resource path="res://scenes/3floor.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/4floor.tscn" type="PackedScene" id=10]
 [ext_resource path="res://scenes/5floor.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/monster.tscn" type="PackedScene" id=12]
-[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=13]
+[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -26,9 +25,9 @@ extents = Vector2( 96, 10 )
 
 [sub_resource type="NavigationPolygon" id=3]
 
-vertices = Vector2Array( 192, 185, 181, 185, 83, 183, 85, 183, 191, 121, 181, 121, 83, 119, 85, 119, 191, 153, 181, 153, 83, 151, 85, 151, 192, 89, 181, 89, 115, 87, 117, 87, 192, 217, 181, 217, 179, 215, 181, 215, 11, 217, 13, 215, 181, 55, 192, 55, 192, 57, 181, 57, 83, 55, 179, 57, 181, 87, 192, 87, 179, 87, 117, 57, 181, 119, 191, 119, 179, 119, 179, 89, 117, 89, 85, 87, 181, 151, 191, 151, 179, 151, 179, 121, 85, 121, 53, 119, 181, 183, 192, 183, 179, 183, 179, 153, 85, 153, 13, 151, 192, 215, 179, 185, 13, 185, 13, 183, 1, 217, 1, 215, 11, 215, 11, 185, 1, 185, 1, 183, 11, 183, 11, 153, 13, 153, 1, 153, 1, 151, 11, 151, 11, 121, 1, 121, 1, 119, 11, 119, 51, 119, 13, 121, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 53, 89, 83, 57, 1, 57, 1, 55, 83, 153, 117, 119, 115, 119, 115, 89, 85, 89, 83, 121, 115, 57, 85, 57, 83, 89 )
-polygons = [ IntArray( 0, 1, 2, 3 ), IntArray( 4, 5, 6, 7 ), IntArray( 8, 9, 10, 11 ), IntArray( 12, 13, 14, 15 ), IntArray( 16, 17, 18, 19 ), IntArray( 18, 17, 20, 21 ), IntArray( 22, 23, 24, 25 ), IntArray( 26, 22, 25, 27 ), IntArray( 28, 29, 12 ), IntArray( 28, 12, 30 ), IntArray( 25, 28, 30, 27 ), IntArray( 26, 27, 31 ), IntArray( 32, 33, 4 ), IntArray( 32, 4, 34 ), IntArray( 13, 32, 34, 35 ), IntArray( 14, 13, 35 ), IntArray( 14, 35, 36, 37 ), IntArray( 38, 39, 8 ), IntArray( 38, 8, 40 ), IntArray( 5, 38, 40, 41 ), IntArray( 6, 5, 41 ), IntArray( 6, 41, 42, 43 ), IntArray( 44, 45, 0 ), IntArray( 44, 0, 46 ), IntArray( 9, 44, 46, 47 ), IntArray( 10, 9, 47 ), IntArray( 10, 47, 48, 49 ), IntArray( 19, 50, 16 ), IntArray( 1, 19, 18, 51 ), IntArray( 2, 1, 51 ), IntArray( 2, 51, 52, 53 ), IntArray( 20, 54, 55, 56 ), IntArray( 21, 20, 56, 52 ), IntArray( 52, 56, 57, 53 ), IntArray( 57, 58, 59, 60 ), IntArray( 53, 57, 60 ), IntArray( 53, 60, 61, 62 ), IntArray( 61, 63, 64, 65 ), IntArray( 62, 61, 65 ), IntArray( 66, 67, 68, 69 ), IntArray( 66, 69, 70, 71 ), IntArray( 72, 73, 74, 75 ), IntArray( 72, 75, 76, 77 ), IntArray( 78, 79, 80, 26 ), IntArray( 81, 62, 65, 49 ), IntArray( 82, 34, 4 ), IntArray( 82, 4, 83 ), IntArray( 36, 82, 83, 84 ), IntArray( 37, 36, 84 ), IntArray( 37, 84, 85, 76 ), IntArray( 11, 40, 8 ), IntArray( 42, 11, 10, 86 ), IntArray( 43, 42, 86 ), IntArray( 43, 86, 71, 70 ), IntArray( 15, 30, 12 ), IntArray( 31, 15, 14, 87 ), IntArray( 26, 31, 87 ), IntArray( 26, 87, 88 ), IntArray( 78, 26, 88, 37 ), IntArray( 76, 78, 37 ), IntArray( 76, 85, 7, 89 ), IntArray( 3, 46, 0 ), IntArray( 48, 3, 2, 81 ), IntArray( 49, 48, 81 ), IntArray( 71, 49, 65, 66 ), IntArray( 77, 43, 70, 72 ), IntArray( 89, 77, 76 ), IntArray( 6, 89, 7 ), IntArray( 4, 7, 83 ) ]
-outlines = [ Vector2Array( 83, 55, 181, 55, 192, 55, 192, 57, 181, 57, 181, 87, 192, 87, 192, 89, 181, 89, 181, 119, 191, 119, 191, 121, 181, 121, 181, 151, 191, 151, 191, 153, 181, 153, 181, 183, 192, 183, 192, 185, 181, 185, 181, 215, 192, 215, 192, 217, 181, 217, 11, 217, 1, 217, 1, 215, 11, 215, 11, 185, 1, 185, 1, 183, 11, 183, 11, 153, 1, 153, 1, 151, 11, 151, 11, 121, 1, 121, 1, 119, 11, 119, 51, 119, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 83, 57, 1, 57, 1, 55 ), Vector2Array( 179, 57, 179, 87, 117, 87, 117, 57 ), Vector2Array( 85, 57, 115, 57, 115, 87, 85, 87 ), Vector2Array( 53, 89, 83, 89, 83, 119, 53, 119 ), Vector2Array( 85, 89, 115, 89, 115, 119, 85, 119 ), Vector2Array( 117, 89, 179, 89, 179, 119, 117, 119 ), Vector2Array( 13, 121, 83, 121, 83, 151, 13, 151 ), Vector2Array( 85, 121, 179, 121, 179, 151, 85, 151 ), Vector2Array( 13, 153, 83, 153, 83, 183, 13, 183 ), Vector2Array( 85, 153, 179, 153, 179, 183, 85, 183 ), Vector2Array( 13, 185, 179, 185, 179, 215, 13, 215 ) ]
+vertices = Vector2Array( 192, 121, 181, 121, 83, 119, 85, 119, 192, 153, 181, 153, 83, 151, 85, 151, 192, 185, 181, 185, 83, 183, 85, 183, 192, 89, 181, 89, 115, 87, 117, 87, 192, 217, 11, 217, 179, 215, 181, 215, 13, 215, 181, 55, 192, 55, 192, 57, 181, 57, 83, 55, 179, 57, 181, 87, 192, 87, 179, 87, 117, 57, 181, 119, 192, 119, 179, 119, 179, 89, 117, 89, 85, 87, 181, 151, 192, 151, 179, 151, 179, 121, 85, 121, 53, 119, 181, 183, 192, 183, 179, 183, 179, 153, 85, 153, 13, 151, 192, 215, 179, 185, 13, 185, 13, 183, 0, 217, 0, 215, 11, 215, 11, 185, 0, 185, 0, 183, 11, 183, 11, 153, 13, 153, 0, 153, 0, 151, 11, 151, 11, 121, 0, 121, 0, 119, 11, 119, 51, 119, 13, 121, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 53, 89, 83, 57, 1, 57, 1, 55, 83, 153, 115, 57, 85, 57, 85, 89, 117, 119, 115, 119, 115, 89, 83, 89, 83, 121 )
+polygons = [ IntArray( 0, 1, 2, 3 ), IntArray( 4, 5, 6, 7 ), IntArray( 8, 9, 10, 11 ), IntArray( 12, 13, 14, 15 ), IntArray( 16, 17, 18, 19 ), IntArray( 20, 18, 17 ), IntArray( 21, 22, 23, 24 ), IntArray( 25, 21, 24, 26 ), IntArray( 27, 28, 12 ), IntArray( 27, 12, 29 ), IntArray( 24, 27, 29, 26 ), IntArray( 25, 26, 30 ), IntArray( 31, 32, 0 ), IntArray( 31, 0, 33 ), IntArray( 13, 31, 33, 34 ), IntArray( 14, 13, 34 ), IntArray( 14, 34, 35, 36 ), IntArray( 37, 38, 4 ), IntArray( 37, 4, 39 ), IntArray( 1, 37, 39, 40 ), IntArray( 2, 1, 40 ), IntArray( 2, 40, 41, 42 ), IntArray( 43, 44, 8 ), IntArray( 43, 8, 45 ), IntArray( 5, 43, 45, 46 ), IntArray( 6, 5, 46 ), IntArray( 6, 46, 47, 48 ), IntArray( 19, 49, 16 ), IntArray( 9, 19, 18, 50 ), IntArray( 10, 9, 50 ), IntArray( 10, 50, 51, 52 ), IntArray( 17, 53, 54, 55 ), IntArray( 20, 17, 55, 51 ), IntArray( 51, 55, 56, 52 ), IntArray( 56, 57, 58, 59 ), IntArray( 52, 56, 59 ), IntArray( 52, 59, 60, 61 ), IntArray( 60, 62, 63, 64 ), IntArray( 61, 60, 64 ), IntArray( 65, 66, 67, 68 ), IntArray( 65, 68, 69, 70 ), IntArray( 71, 72, 73, 74 ), IntArray( 71, 74, 75, 76 ), IntArray( 77, 78, 79, 25 ), IntArray( 80, 61, 64, 48 ), IntArray( 15, 29, 12 ), IntArray( 30, 15, 14, 81 ), IntArray( 25, 30, 81 ), IntArray( 25, 81, 82 ), IntArray( 77, 25, 82, 36 ), IntArray( 75, 77, 36, 83 ), IntArray( 84, 33, 0 ), IntArray( 84, 0, 85 ), IntArray( 35, 84, 85, 86 ), IntArray( 36, 35, 86 ), IntArray( 36, 86, 83 ), IntArray( 75, 83, 3, 87 ), IntArray( 7, 39, 4 ), IntArray( 41, 7, 6, 88 ), IntArray( 42, 41, 88 ), IntArray( 42, 88, 70, 69 ), IntArray( 11, 45, 8 ), IntArray( 47, 11, 10, 80 ), IntArray( 48, 47, 80 ), IntArray( 70, 48, 64, 65 ), IntArray( 76, 42, 69, 71 ), IntArray( 87, 76, 75 ), IntArray( 2, 87, 3 ), IntArray( 0, 3, 85 ) ]
+outlines = [ Vector2Array( 83, 55, 181, 55, 192, 55, 192, 57, 181, 57, 181, 87, 192, 87, 192, 89, 181, 89, 181, 119, 192, 119, 192, 121, 181, 121, 181, 151, 192, 151, 192, 153, 181, 153, 181, 183, 192, 183, 192, 185, 181, 185, 181, 215, 192, 215, 192, 217, 11, 217, 0, 217, 0, 215, 11, 215, 11, 185, 0, 185, 0, 183, 11, 183, 11, 153, 0, 153, 0, 151, 11, 151, 11, 121, 0, 121, 0, 119, 11, 119, 51, 119, 51, 89, 0, 89, 0, 87, 51, 87, 83, 87, 83, 57, 1, 57, 1, 55 ), Vector2Array( 179, 57, 179, 87, 117, 87, 117, 57 ), Vector2Array( 85, 57, 115, 57, 115, 87, 85, 87 ), Vector2Array( 53, 89, 83, 89, 83, 119, 53, 119 ), Vector2Array( 85, 89, 115, 89, 115, 119, 85, 119 ), Vector2Array( 117, 89, 179, 89, 179, 119, 117, 119 ), Vector2Array( 13, 121, 83, 121, 83, 151, 13, 151 ), Vector2Array( 85, 121, 179, 121, 179, 151, 85, 151 ), Vector2Array( 13, 153, 83, 153, 83, 183, 13, 183 ), Vector2Array( 85, 153, 179, 153, 179, 183, 85, 183 ), Vector2Array( 13, 185, 179, 185, 179, 215, 13, 215 ) ]
 
 [node name="Layout" type="Node2D"]
 
@@ -46,6 +45,8 @@ gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
+collision/layers = 32
+collision/mask = 0
 script/script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/left"]
@@ -66,6 +67,8 @@ gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
+collision/layers = 32
+collision/mask = 0
 script/script = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/right"]
@@ -86,7 +89,6 @@ centered = false
 transform/pos = Vector2( 0, 224 )
 texture = ExtResource( 5 )
 centered = false
-__meta__ = { "_editor_collapsed":true }
 
 [node name="bottom_body" type="StaticBody2D" parent="Bottom"]
 
@@ -95,8 +97,8 @@ input/pickable = false
 shapes/0/shape = SubResource( 2 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 96, 10 )
 shapes/0/trigger = false
-collision/layers = 2
-collision/mask = 1
+collision/layers = 4
+collision/mask = 0
 constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
 friction = 1.0
@@ -180,14 +182,8 @@ enabled = true
 
 [node name="Monsters" type="Node2D" parent="."]
 
-[node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 140, 56 )
-collision/margin = 0.08
-
-[node name="Player" parent="." instance=ExtResource( 13 )]
+[node name="Player" parent="." instance=ExtResource( 12 )]
 
 transform/pos = Vector2( 44, 216 )
-collision/margin = 0.08
 
 
