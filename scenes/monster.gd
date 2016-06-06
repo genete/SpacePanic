@@ -18,6 +18,8 @@ var current_frame=0
 var walk_speed=30
 var fall_speed=walk_speed*4
 var consumed_motion=0
+var bury_speed=10
+var depth_counter=1
 
 const UPDATE_PATH_TIME=2
 var update_path_counter=0
@@ -26,11 +28,14 @@ var uf=false
 var df=false
 var lf=true
 var rf=true
+var ray_cast_fall1=null
+var ray_cast_fall2=null
 
 var left=false
 var right=false
 var up=false
 var down=false
+
 
 var poses={ 
 "walk1": 0,
@@ -41,6 +46,9 @@ var poses={
 "fall" : 5
 }
 
+var hole_class=preload("res://scenes/hole.gd")
+
+
 var begin=Vector2()
 var end=Vector2()
 var path=[]
@@ -48,19 +56,37 @@ var path=[]
 func _ready():
 	player=get_node("/root/Layout/Player")
 	navigation=get_node("/root/Layout/Navigation2D")
+	ray_cast_fall1=get_node("ray_cast_fall1")
+	ray_cast_fall2=get_node("ray_cast_fall2")
 	set_fixed_process(true)
 
 
 func _fixed_process(delta):
 	var speed
 	var dir
+	var fall1_colliding=ray_cast_fall1.is_colliding()
+	var fall2_colliding=ray_cast_fall2.is_colliding()
+	var hole_collided=null
+	var over_a_hole=false
+
+	if fall1_colliding and fall2_colliding:
+		var hole1=ray_cast_fall1.get_collider()
+		var hole2=ray_cast_fall1.get_collider()
+		if hole1 !=null and hole2!=null and hole1 extends hole_class and hole2 extends hole_class:
+			over_a_hole=true
+			hole_collided=ray_cast_fall1.get_collider()
+			set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
 
 	update_path_counter+=delta
 	if update_path_counter >= UPDATE_PATH_TIME:
 		update_path_counter=0
 		_update_path()
 
-	speed=walk_speed
+	if over_a_hole:
+		speed=bury_speed
+	else:
+		speed=walk_speed
+
 	consumed_motion+=speed*delta
 	# Return if not reached movement length
 	if consumed_motion < MOVE_LENGTH:
@@ -74,7 +100,25 @@ func _fixed_process(delta):
 #	var x=direction.x
 #	var y=direction.y
 #	dir = choose_direction_by_xy(x, y)
-	dir=_choose_direction_by_path()
+
+	
+	if over_a_hole and not hole_collided.is_completed():
+		dir=""
+		var depth=hole_collided.depth
+		var hole_pos=hole_collided.get_pos()
+		depth_counter-=0.5
+		if depth_counter == 0:
+			hole_collided.bury()
+			depth_counter=1
+			if depth==1:
+				set_pos(Vector2(get_pos().x, hole_pos.y-12))
+	elif over_a_hole and hole_collided.is_completed():
+		#change sprite quickly of hanging on
+		# increase counter time hanging
+		pass
+	else:
+		dir=_choose_direction_by_path()
+
 	update_directions(dir)
 	
 	if left:
@@ -146,22 +190,30 @@ func update_directions(d):
 		right=false
 		up=false
 		down=false
+		return
 	if d=="right":
 		left=false
 		right=true
 		up=false
 		down=false
+		return
 	if d=="up":
 		left=false
 		right=false
 		up=true
 		down=false
+		return
 	if d=="down":
 		left=false
 		right=false
 		up=false
 		down=true
-	pass
+		return
+	left=false
+	right=false
+	up=false
+	down=false
+	
 
 func _update_path():
 	begin=get_pos()-navigation.get_pos()

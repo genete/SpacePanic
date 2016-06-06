@@ -48,12 +48,12 @@ func _ready():
 ##### TO BE REMOVED 
 	OS.set_window_size(Vector2(192, 256)*4)
 ###################
-	set_fixed_process(true)
 	ray_cast_near=get_node("ray_cast_near")
 	ray_cast_far=get_node("ray_cast_far")
 	ray_cast_hole=get_node("ray_cast_hole")
 	ray_cast_fall1=get_node("ray_cast_fall1")
 	ray_cast_fall2=get_node("ray_cast_fall2")
+	set_fixed_process(true)
 	pass
 
 
@@ -104,7 +104,7 @@ func _fixed_process(delta):
 	if both_colliding:
 		collider1=ray_cast_far.get_collider()
 		collider2=ray_cast_near.get_collider()
-		if collider1 extends hole_class and collider2 extends hole_class:
+		if collider1!=null and collider2!=null and collider1 extends hole_class and collider2 extends hole_class:
 			if collider1.get_instance_ID() == collider2.get_instance_ID():
 				facing_hole=true
 				hole_collided=collider1
