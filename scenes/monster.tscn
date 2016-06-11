@@ -33,18 +33,34 @@ hframes = 7
 
 [node name="ray_cast_fall1" type="RayCast2D" parent="."]
 
-transform/pos = Vector2( -5.5, 8 )
+transform/pos = Vector2( -5.5, -1 )
 enabled = true
-cast_to = Vector2( 0, 7 )
+cast_to = Vector2( 0, 10 )
 layer_mask = 8
 type_mask = 31
 
 [node name="ray_cast_fall2" type="RayCast2D" parent="."]
 
-transform/pos = Vector2( 5.5, 8 )
+transform/pos = Vector2( 5.5, -1 )
 enabled = true
-cast_to = Vector2( 0, 7 )
+cast_to = Vector2( 0, 10 )
 layer_mask = 8
+type_mask = 31
+
+[node name="ray_cast_monster_left" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( -9, 9 )
+enabled = false
+cast_to = Vector2( 0, 2 )
+layer_mask = 16
+type_mask = 31
+
+[node name="ray_cast_monster_right" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( 9, 9 )
+enabled = false
+cast_to = Vector2( 0, 2 )
+layer_mask = 16
 type_mask = 31
 
 

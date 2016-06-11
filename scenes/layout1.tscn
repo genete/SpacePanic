@@ -42,7 +42,7 @@ __meta__ = { "_editor_collapsed":true }
 
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 1, -0, 0, 1, -3, 132 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -3, 132 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
@@ -64,7 +64,7 @@ _update_shape_index = 0
 transform/pos = Vector2( 196, 0 )
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 1, -0, 0, 1, -1, 132 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, -1, 132 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
@@ -188,10 +188,18 @@ enabled = true
 
 [node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
 
-transform/pos = Vector2( 44, 56 )
+transform/pos = Vector2( 12, 88 )
+
+[node name="Monster 2" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 148, 56 )
+
+[node name="Monster 3" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 148, 184 )
 
 [node name="Player" parent="." instance=ExtResource( 13 )]
 
-transform/pos = Vector2( 44, 216 )
+transform/pos = Vector2( 36, 152 )
 
 

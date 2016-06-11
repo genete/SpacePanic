@@ -31,6 +31,7 @@ var ray_cast_far=null
 var ray_cast_hole=null
 var ray_cast_fall1=null
 var ray_cast_fall2=null
+var ray_cast_monster=null
 
 var poses={ 
 "walk1": 0,
@@ -53,6 +54,7 @@ func _ready():
 	ray_cast_hole=get_node("ray_cast_hole")
 	ray_cast_fall1=get_node("ray_cast_fall1")
 	ray_cast_fall2=get_node("ray_cast_fall2")
+	ray_cast_monster=get_node("ray_cast_monster")
 	set_fixed_process(true)
 	pass
 
@@ -96,6 +98,8 @@ func _fixed_process(delta):
 	var one_colliding=near_colliding or far_colliding
 	var fall1_colliding=ray_cast_fall1.is_colliding()
 	var fall2_colliding=ray_cast_fall2.is_colliding()
+	var monster_colliding=ray_cast_monster.is_colliding()
+	var monster_collided=ray_cast_monster.get_collider()
 	var on_floor=lf or rf
 	var collider1=null
 	var collider2=null
@@ -108,7 +112,12 @@ func _fixed_process(delta):
 			if collider1.get_instance_ID() == collider2.get_instance_ID():
 				facing_hole=true
 				hole_collided=collider1
+
+
+	
 	var can_dig = ((not one_colliding and not hole_colliding) or facing_hole) and on_floor
+	if monster_collided!=null and (monster_collided.burying0 or monster_collided.burying1):
+		can_dig=false
 	# Pre-process inputs with flags
 	#If player is on ladder and want to go right or left
 	if (not lf and not rf and (up or down) and (right or left)):
@@ -121,7 +130,7 @@ func _fixed_process(delta):
 	# Can't pass an incomplete hole
 	if facing_hole:
 		was_facing_a_hole=true
-		if hole_collided.is_completed():
+		if hole_collided.is_completed() and not monster_colliding:
 			if siding_right:
 				rf=true
 			else:

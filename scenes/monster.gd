@@ -11,26 +11,57 @@ var down_move=Vector2(0,MOVE_LENGTH)
 
 var player
 var navigation
+var ray_cast_fall1
+var ray_cast_fall2
+var ray_cast_monster_left
+var ray_cast_monster_right
 
-var falling=false
+#States, speeds and counters
+var state={
+"walking": true,
+"burying0": false,
+"burying1": false,
+"hanging": false,
+"falling": false,
+"dying": false
+}
+var walking=state["walking"]
+var burying0=state["burying0"]
+var burying1=state["burying1"]
+var hanging=state["hanging"]
+var falling=state["falling"]
+var dying=state["dying"]
+
+var walk_speed=30
+var bury0_speed=10
+var bury1_speed=10
+var fall_speed=walk_speed*4
+var hang_speed=100
+
+var depth_counter=1
 var fall_step=0
 var current_frame=0
-var walk_speed=30
-var fall_speed=walk_speed*4
 var consumed_motion=0
-var bury_speed=10
-var depth_counter=1
+var holes_crossed=0
+var minimum_holes_to_die=1
+var burying0_sprite_counter=5
+var hanging_counter=200
+var hanging_sprite_counter=5
 
-const UPDATE_PATH_TIME=2
+#Navigation related
+const UPDATE_PATH_STEPS=50
 var update_path_counter=0
+var begin=Vector2()
+var end=Vector2()
+var path=[]
 
+#Walking flags
 var uf=false
 var df=false
 var lf=true
 var rf=true
-var ray_cast_fall1=null
-var ray_cast_fall2=null
 
+#walking directions
 var left=false
 var right=false
 var up=false
@@ -38,26 +69,34 @@ var down=false
 
 
 var poses={ 
-"walk1": 0,
-"walk2": 1,
-"climb": 4,
-"dig1" : 2,
-"dig2" : 3,
-"fall" : 5
+"walking1": 0,
+"walking2": 1,
+"hanging1" : 2,
+"hanging2" : 3,
+"hanging3" : 4,
+"hanging4" : 5,
+"hanging5" : 6,
+"burying01" : 2,
+"burying02" : 3,
+"burying03" : 4,
+"burying04" : 5,
+"burying05" : 6,
+"burying11" : 0,
+"burying12" : 1,
+"falling" : 0
 }
 
 var hole_class=preload("res://scenes/hole.gd")
+var monster_class=get_script()
 
-
-var begin=Vector2()
-var end=Vector2()
-var path=[]
 
 func _ready():
 	player=get_node("/root/Layout/Player")
 	navigation=get_node("/root/Layout/Navigation2D")
 	ray_cast_fall1=get_node("ray_cast_fall1")
 	ray_cast_fall2=get_node("ray_cast_fall2")
+	ray_cast_monster_left=get_node("ray_cast_monster_left")
+	ray_cast_monster_right=get_node("ray_cast_monster_right")
 	set_fixed_process(true)
 
 
@@ -66,74 +105,162 @@ func _fixed_process(delta):
 	var dir
 	var fall1_colliding=ray_cast_fall1.is_colliding()
 	var fall2_colliding=ray_cast_fall2.is_colliding()
+	var monster_left_colliding=ray_cast_monster_left.is_colliding()
+	var monster_right_colliding=ray_cast_monster_right.is_colliding()
 	var hole_collided=null
 	var over_a_hole=false
 
+
+	#Hole rays collided? 
+	# Result:
+	# over_a_hole=true/false
+	# hole_collided=hole object 
 	if fall1_colliding and fall2_colliding:
 		var hole1=ray_cast_fall1.get_collider()
 		var hole2=ray_cast_fall1.get_collider()
 		if hole1 !=null and hole2!=null and hole1 extends hole_class and hole2 extends hole_class:
 			over_a_hole=true
 			hole_collided=ray_cast_fall1.get_collider()
-			set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
 
-	update_path_counter+=delta
-	if update_path_counter >= UPDATE_PATH_TIME:
-		update_path_counter=0
-		_update_path()
 
+# Monster is OVER A HOLE
 	if over_a_hole:
-		speed=bury_speed
+		if walking:
+			if hole_collided.is_completed():
+				change_state_to("hanging")
+				set_pos(Vector2(get_pos().x, hole_collided.get_pos().y+4))
+			else:
+				change_state_to("burying1")
+				set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
+		else:
+			if falling and fall_step==0:
+				holes_crossed+=1
+# Monster is NOT OVER A HOLE
+	else:
+		if burying1:
+			change_state_to("walking")
+		if hanging:
+			change_state_to("falling")
+			current_frame=poses["falling"]
+			fall_step=16
+			holes_crossed+=1
+		else: 
+			if falling and fall_step==0:
+				if holes_crossed < minimum_holes_to_die:
+					change_state_to("walking")
+				else:
+					change_state_to("dying")
+			else:
+				var monster1=ray_cast_fall1.get_collider()
+				var monster2=ray_cast_fall2.get_collider()
+				if (monster1!=null and monster2 !=null) and (monster1 extends monster_class or monster2 extends monster_class):
+					if monster1!=null:
+						monster1.change_state_to("dying")
+					if monster2!=null:
+						monster2.change_state_to("dying")
+					change_state_to("dying")
+#################
+# Update speeds state based
+	if walking:
+		speed=walk_speed
+	elif burying0:
+		speed=bury0_speed
+	elif burying1:
+		speed=bury1_speed
+	elif hanging:
+		speed=hang_speed
+	elif falling:
+		speed=fall_speed
 	else:
 		speed=walk_speed
 
+
 	consumed_motion+=speed*delta
 	# Return if not reached movement length
-	if consumed_motion < MOVE_LENGTH:
-		return
-	else:
-		consumed_motion=0
+	if not falling:
+		if consumed_motion < MOVE_LENGTH:
+			return
+		else:
+			consumed_motion=0
+	if falling:
+		if consumed_motion < MOVE_LENGTH/4:
+			return
+		else:
+			consumed_motion=0
 
-	# choose a direction
-#	var mypos=get_pos()
-#	var direction=player.get_pos()-mypos
-#	var x=direction.x
-#	var y=direction.y
-#	dir = choose_direction_by_xy(x, y)
+	if walking:
+		update_path_counter+=1
+		if update_path_counter >= UPDATE_PATH_STEPS:
+			update_path_counter=0
+			_update_path()
+		dir=_choose_direction_by_path()
+		update_directions(dir)
+		if left:
+			move(left_move)
+		elif right:
+			move(right_move)
+		elif up:
+			move(up_move)
+		elif down:
+			move(down_move)
+		if current_frame==poses["walking1"]:
+			current_frame=poses["walking2"]
+		else:
+			current_frame=poses["walking1"]
 
 	
-	if over_a_hole and not hole_collided.is_completed():
-		dir=""
+	if burying1:
 		var depth=hole_collided.depth
 		var hole_pos=hole_collided.get_pos()
 		depth_counter-=0.5
 		if depth_counter == 0:
 			hole_collided.bury()
 			depth_counter=1
-			if depth==1:
-				set_pos(Vector2(get_pos().x, hole_pos.y-12))
-	elif over_a_hole and hole_collided.is_completed():
-		#change sprite quickly of hanging on
-		# increase counter time hanging
-		pass
-	else:
-		dir=_choose_direction_by_path()
+		if depth==1:
+			set_pos(Vector2(get_pos().x, hole_pos.y-12))
+			#change_state_to("walking")
+			# evolve
+		else:
+			set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
+		if current_frame==poses["burying12"]:
+			current_frame=poses["burying11"]
+		else:
+			current_frame=poses["burying12"]
 
-	update_directions(dir)
+	if burying0:
+		depth_counter-=0.2
+		if depth_counter<=1:
+			change_state_to("burying1")
+			set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
+			current_frame=poses["burying11"]
+			depth_counter=1
+			burying0_sprite_counter=5
+		else:
+			print("burying0 counter ", burying0_sprite_counter)
+			print("depth_counter ", depth_counter)
+			current_frame=poses["burying0"+str(burying0_sprite_counter)]
+			burying0_sprite_counter-=1
+
+	if hanging:
+		hanging_counter-=1
+		if hanging_counter<=0:
+			change_state_to("burying0")
+			hanging_counter=100
+			depth_counter=2 #change here to match burying0 frames
+		current_frame=poses["hanging"+str(hanging_sprite_counter)]
+		hanging_sprite_counter-=1
+		if hanging_sprite_counter<=3:
+			hanging_sprite_counter=5
+
+	if falling:
+		fall_step+=1
+		move(down_move/4)
+		if fall_step>=FALL_STEPS:
+			fall_step=0
 	
-	if left:
-		move(left_move)
-	elif right:
-		move(right_move)
-	elif up:
-		move(up_move)
-	elif down:
-		move(down_move)
-	
-	if current_frame==poses["walk1"]:
-		current_frame=poses["walk2"]
-	else:
-		current_frame=poses["walk1"]
+	if dying:
+		# signal points
+		die()
 
 	get_node("Sprite").set_frame(current_frame)
 
@@ -241,3 +368,20 @@ func _choose_direction_by_path():
 		return dir
 	return ""
 
+func change_state_to(new_state):
+	for s in ["walking", "burying0", "burying1", "hanging", "falling", "dying"]:
+		if s==new_state:
+			state[s]=true
+		else:
+			state[s]=false
+	walking=state["walking"]
+	burying0=state["burying0"]
+	burying1=state["burying1"]
+	hanging=state["hanging"]
+	falling=state["falling"]
+	dying=state["dying"]
+	print("**** new state = ", new_state)
+
+func die():
+	queue_free()
+	pass
