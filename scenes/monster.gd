@@ -3,6 +3,7 @@ extends KinematicBody2D
 
 const MOVE_LENGTH=4
 const FALL_STEPS=8*4
+const MAX_HANGING_COUNTER=200
 
 var left_move=Vector2(-MOVE_LENGTH,0)
 var right_move=Vector2(MOVE_LENGTH,0)
@@ -15,6 +16,7 @@ var ray_cast_fall1
 var ray_cast_fall2
 var ray_cast_monster_left
 var ray_cast_monster_right
+var ray_cast_monster_kill
 
 #States, speeds and counters
 var state={
@@ -44,12 +46,13 @@ var current_frame=0
 var consumed_motion=0
 var holes_crossed=0
 var minimum_holes_to_die=1
-var burying0_sprite_counter=5
-var hanging_counter=200
-var hanging_sprite_counter=5
+var burying0_sprite_counter=4
+var hanging_counter=MAX_HANGING_COUNTER
+var hanging_sprite_counter=2
 
 #Navigation related
-const UPDATE_PATH_STEPS=50
+var hunting_radius=40
+const UPDATE_PATH_STEPS=40
 var update_path_counter=0
 var begin=Vector2()
 var end=Vector2()
@@ -71,11 +74,8 @@ var down=false
 var poses={ 
 "walking1": 0,
 "walking2": 1,
-"hanging1" : 2,
-"hanging2" : 3,
-"hanging3" : 4,
-"hanging4" : 5,
-"hanging5" : 6,
+"hanging1" : 5,
+"hanging2" : 6,
 "burying01" : 2,
 "burying02" : 3,
 "burying03" : 4,
@@ -91,12 +91,14 @@ var monster_class=get_script()
 
 
 func _ready():
+	randomize()
 	player=get_node("/root/Layout/Player")
 	navigation=get_node("/root/Layout/Navigation2D")
 	ray_cast_fall1=get_node("ray_cast_fall1")
 	ray_cast_fall2=get_node("ray_cast_fall2")
 	ray_cast_monster_left=get_node("ray_cast_monster_left")
 	ray_cast_monster_right=get_node("ray_cast_monster_right")
+	ray_cast_monster_kill=get_node("ray_cast_monster_kill")
 	set_fixed_process(true)
 
 
@@ -107,6 +109,7 @@ func _fixed_process(delta):
 	var fall2_colliding=ray_cast_fall2.is_colliding()
 	var monster_left_colliding=ray_cast_monster_left.is_colliding()
 	var monster_right_colliding=ray_cast_monster_right.is_colliding()
+	var monster_kill_colliding=ray_cast_monster_kill.is_colliding()
 	var hole_collided=null
 	var over_a_hole=false
 
@@ -135,6 +138,7 @@ func _fixed_process(delta):
 		else:
 			if falling and fall_step==0:
 				holes_crossed+=1
+
 # Monster is NOT OVER A HOLE
 	else:
 		if burying1:
@@ -143,23 +147,23 @@ func _fixed_process(delta):
 			change_state_to("falling")
 			current_frame=poses["falling"]
 			fall_step=16
+			print("*fall step ", fall_step)
 			holes_crossed+=1
-		else: 
+		if falling: 
+			if monster_kill_colliding:
+				print("monster kill colliding")
+				var monster=ray_cast_monster_kill.get_collider()
+				if monster!=null and monster extends monster_class:
+					monster.change_state_to("dying")
+					print("to dying")
+					change_state_to("dying")
 			if falling and fall_step==0:
 				if holes_crossed < minimum_holes_to_die:
 					change_state_to("walking")
 				else:
+					print("to dying")
 					change_state_to("dying")
-			else:
-				var monster1=ray_cast_fall1.get_collider()
-				var monster2=ray_cast_fall2.get_collider()
-				if (monster1!=null and monster2 !=null) and (monster1 extends monster_class or monster2 extends monster_class):
-					if monster1!=null:
-						monster1.change_state_to("dying")
-					if monster2!=null:
-						monster2.change_state_to("dying")
-					change_state_to("dying")
-#################
+
 # Update speeds state based
 	if walking:
 		speed=walk_speed
@@ -189,15 +193,27 @@ func _fixed_process(delta):
 			consumed_motion=0
 
 	if walking:
-		update_path_counter+=1
-		if update_path_counter >= UPDATE_PATH_STEPS:
-			update_path_counter=0
-			_update_path()
-		dir=_choose_direction_by_path()
+#		update_path_counter+=1
+#		if update_path_counter >= UPDATE_PATH_STEPS:
+#			update_path_counter=0
+#			_update_path()
+#			dir=_choose_direction_by_path()
+#		else:
+		if monster_left_colliding:
+			lf=false
+		if monster_right_colliding:
+			rf=false
+		var distance=Vector2()
+		distance=_update_path()
+		if distance.length()>hunting_radius:
+			dir=_walk_free()
+		else:
+			dir=_choose_direction_by_path()
 		update_directions(dir)
-		if left:
+		update()
+		if left and not monster_left_colliding:
 			move(left_move)
-		elif right:
+		elif right and not monster_right_colliding:
 			move(right_move)
 		elif up:
 			move(up_move)
@@ -234,7 +250,7 @@ func _fixed_process(delta):
 			set_pos(Vector2(get_pos().x, hole_collided.get_pos().y-12+(hole_collided.depth+depth_counter)*2))
 			current_frame=poses["burying11"]
 			depth_counter=1
-			burying0_sprite_counter=5
+			burying0_sprite_counter=4
 		else:
 			print("burying0 counter ", burying0_sprite_counter)
 			print("depth_counter ", depth_counter)
@@ -245,16 +261,17 @@ func _fixed_process(delta):
 		hanging_counter-=1
 		if hanging_counter<=0:
 			change_state_to("burying0")
-			hanging_counter=100
+			hanging_counter=MAX_HANGING_COUNTER
 			depth_counter=2 #change here to match burying0 frames
 		current_frame=poses["hanging"+str(hanging_sprite_counter)]
 		hanging_sprite_counter-=1
-		if hanging_sprite_counter<=3:
-			hanging_sprite_counter=5
+		if hanging_sprite_counter<=0:
+			hanging_sprite_counter=2
 
 	if falling:
 		fall_step+=1
 		move(down_move/4)
+		print("fall step ", fall_step)
 		if fall_step>=FALL_STEPS:
 			fall_step=0
 	
@@ -348,6 +365,7 @@ func _update_path():
 	var p=navigation.get_simple_path(begin, end, true)
 	path=Array(p)
 	path.invert()
+	return end-begin
 
 func _choose_direction_by_path():
 	var to_walk= MOVE_LENGTH
@@ -368,6 +386,130 @@ func _choose_direction_by_path():
 		return dir
 	return ""
 
+# left, right, up, down
+# lf, rf, uf, df
+func _walk_free():
+	if not rf and not lf and not uf and not df:
+		return ""
+	#forced
+	if lf and not rf and not uf and not df:
+		return "left"
+	if not lf and rf and not uf and not df:
+		return "right"
+	if not lf and not rf and uf and not df:
+		return "up"
+	if not lf and not rf and not uf and df:
+		return "down"
+	#bifurcation by two
+	if lf and rf and not uf and not df:
+		if left:
+			return "left"
+		if right:
+			return "right"
+		if randf()>0.5: return "left"
+		else: return "right"
+	if uf and df and not rf and not lf:
+		if up:
+			return "up"
+		if down:
+			return "down"
+		if randf()>0.5: return "up"
+		else: return "down"
+	if uf and rf and not df and not lf:
+		if up:
+			return "up"
+		if right:
+			return "right"
+		if randf()>0.5: return "up"
+		else: return "right"
+	if df and rf and not uf and not lf:
+		if down:
+			return "down"
+		if right:
+			return "right"
+		if randf()>0.5: return "down"
+		else: return "right"
+	if uf and lf and not df and not rf:
+		if up:
+			return "up"
+		if left:
+			return "left"
+		if randf()>0.5: return "up"
+		else: return "left"
+	if df and lf and not uf and not rf:
+		if up:
+			return "down"
+		if left:
+			return "left"
+		if randf()>0.5: return "down"
+		else: return "left"
+	# bifurcation by three
+	if lf and rf and uf and not df:
+		if left:
+			if randf()>0.5: return "left"
+			else: return "up"
+		if right:
+			if randf()>0.5: return "right"
+			else: return "up"
+		if up or down:
+			if randf()>0.5: return "left"
+			else: return "right"
+	if lf and rf and df and not uf:
+		if left:
+			if randf()>0.5: return "left"
+			else: return "down"
+		if right:
+			if randf()>0.5: return "right"
+			else: return "down"
+		if down or up:
+			if randf()>0.5: return "left"
+			else: return "right"
+	if lf and uf and df and not rf:
+		if left or right:
+			if randf()>0.5: return "up"
+			else: return "down"
+		if up:
+			if randf()>0.5: return "up"
+			else: return "left"
+		if down:
+			if randf()>0.5: return "down"
+			else: return "left"
+	if rf and uf and df and not lf:
+		if right or left:
+			if randf()>0.5: return "up"
+			else: return "down"
+		if up:
+			if randf()>0.5: return "up"
+			else: return "right"
+		if down:
+			if randf()>0.5: return "down"
+			else: return "right"
+	# bifurcatrion by four
+#	if left:
+#		rf=false
+#		return _walk_free()
+#	if right:
+#		lf=false
+#		return _walk_free()
+#	if up:
+#		df=false
+#		return _walk_free()
+#	if down:
+#		uf=false
+#		return _walk_free()
+	if randf()>=0.5:
+		if randf()>0.5:
+			return "left"
+		else:
+			return "right"
+	elif randf()>=0.5: 
+		if randf()>0.5:
+			return "up"
+		else: 
+			return "down"
+	pass
+
+
 func change_state_to(new_state):
 	for s in ["walking", "burying0", "burying1", "hanging", "falling", "dying"]:
 		if s==new_state:
@@ -385,3 +527,6 @@ func change_state_to(new_state):
 func die():
 	queue_free()
 	pass
+
+func _draw():
+	draw_circle(Vector2(0,0), hunting_radius, Color(1,1,1,0.3)) 
