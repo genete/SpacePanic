@@ -186,7 +186,7 @@ enabled = true
 
 [node name="Monsters" type="Node2D" parent="."]
 
-[node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
+[node name="Monster 1" parent="Monsters" instance=ExtResource( 12 )]
 
 transform/pos = Vector2( 12, 88 )
 
@@ -201,5 +201,6 @@ transform/pos = Vector2( 132, 56 )
 [node name="Player" parent="." instance=ExtResource( 13 )]
 
 transform/pos = Vector2( 36, 152 )
+collision/margin = 0.08
 
 

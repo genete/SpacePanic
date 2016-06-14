@@ -34,7 +34,7 @@ var hanging=state["hanging"]
 var falling=state["falling"]
 var dying=state["dying"]
 
-var walk_speed=30
+var walk_speed=100
 var bury0_speed=10
 var bury1_speed=10
 var fall_speed=walk_speed*4
@@ -57,6 +57,10 @@ var update_path_counter=0
 var begin=Vector2()
 var end=Vector2()
 var path=[]
+
+var one_c=0
+var two_c=0
+var three_c=0
 
 #Walking flags
 var uf=false
@@ -193,24 +197,15 @@ func _fixed_process(delta):
 			consumed_motion=0
 
 	if walking:
-#		update_path_counter+=1
-#		if update_path_counter >= UPDATE_PATH_STEPS:
-#			update_path_counter=0
-#			_update_path()
-#			dir=_choose_direction_by_path()
-#		else:
-		if monster_left_colliding:
-			lf=false
-		if monster_right_colliding:
-			rf=false
 		var distance=Vector2()
-		distance=_update_path()
-		if distance.length()>hunting_radius:
-			dir=_walk_free()
-		else:
-			dir=_choose_direction_by_path()
+#		distance=_update_path()
+#		if distance.length()>hunting_radius:
+#			dir=_walk_free()
+#		else:
+#			dir=_choose_direction_by_path()
+		dir=_walk_free()
 		update_directions(dir)
-		update()
+		#update()
 		if left and not monster_left_colliding:
 			move(left_move)
 		elif right and not monster_right_colliding:
@@ -384,14 +379,16 @@ func _choose_direction_by_path():
 		var y=direction.y
 		var dir=choose_direction_by_xy(x, y)
 		return dir
-	return ""
+	return "-"
 
 # left, right, up, down
 # lf, rf, uf, df
 func _walk_free():
+	# No way
 	if not rf and not lf and not uf and not df:
-		return ""
-	#forced
+		print("stopped")
+		return "-"
+	# one forced
 	if lf and not rf and not uf and not df:
 		return "left"
 	if not lf and rf and not uf and not df:
@@ -406,85 +403,85 @@ func _walk_free():
 			return "left"
 		if right:
 			return "right"
-		if randf()>0.5: return "left"
-		else: return "right"
+		return random_bifurcation_by_two("left", "right")
 	if uf and df and not rf and not lf:
 		if up:
 			return "up"
 		if down:
 			return "down"
-		if randf()>0.5: return "up"
-		else: return "down"
+		return random_bifurcation_by_two("up", "down")
 	if uf and rf and not df and not lf:
 		if up:
 			return "up"
 		if right:
 			return "right"
-		if randf()>0.5: return "up"
-		else: return "right"
+		return random_bifurcation_by_two("up", "right")
 	if df and rf and not uf and not lf:
 		if down:
 			return "down"
 		if right:
 			return "right"
-		if randf()>0.5: return "down"
-		else: return "right"
+		return random_bifurcation_by_two("down", "right")
 	if uf and lf and not df and not rf:
 		if up:
 			return "up"
 		if left:
 			return "left"
-		if randf()>0.5: return "up"
-		else: return "left"
+		return random_bifurcation_by_two("up", "left")
 	if df and lf and not uf and not rf:
 		if up:
 			return "down"
 		if left:
 			return "left"
-		if randf()>0.5: return "down"
-		else: return "left"
+		return random_bifurcation_by_two("down", "left")
 	# bifurcation by three
 	if lf and rf and uf and not df:
 		if left:
-			if randf()>0.5: return "left"
-			else: return "up"
+			return random_bifurcation_by_two("left", "up")
 		if right:
-			if randf()>0.5: return "right"
-			else: return "up"
+			return random_bifurcation_by_two("right", "up")
 		if up or down:
-			if randf()>0.5: return "left"
-			else: return "right"
+			return random_bifurcation_by_two("left", "right")
 	if lf and rf and df and not uf:
 		if left:
-			if randf()>0.5: return "left"
-			else: return "down"
+			return random_bifurcation_by_two("left", "down")
 		if right:
-			if randf()>0.5: return "right"
-			else: return "down"
+			return random_bifurcation_by_two("right", "down")
 		if down or up:
-			if randf()>0.5: return "left"
-			else: return "right"
+			return random_bifurcation_by_two("left", "right")
 	if lf and uf and df and not rf:
 		if left or right:
-			if randf()>0.5: return "up"
-			else: return "down"
+			return random_bifurcation_by_two("up", "down")
 		if up:
-			if randf()>0.5: return "up"
-			else: return "left"
+			return random_bifurcation_by_two("up", "left")
 		if down:
-			if randf()>0.5: return "down"
-			else: return "left"
+			return random_bifurcation_by_two("down", "left")
 	if rf and uf and df and not lf:
 		if right or left:
-			if randf()>0.5: return "up"
-			else: return "down"
+			return random_bifurcation_by_two("up", "down")
 		if up:
-			if randf()>0.5: return "up"
-			else: return "right"
+			return random_bifurcation_by_two("up", "right")
 		if down:
-			if randf()>0.5: return "down"
-			else: return "right"
+			return random_bifurcation_by_two("down", "right")
 	# bifurcatrion by four
+	if left:
+		random_bifurcation_by_three("left", "up", "down")
+	if right:
+		random_bifurcation_by_three( "right", "up", "down")
+	if up:
+		random_bifurcation_by_three("up", "left", "right")
+	if down:
+		random_bifurcation_by_three("down", "left", "right")
+	var r=randf()
+	if r<=0.25:
+		return "left"
+	elif r<0.5:
+		return "right"
+	elif r<0.75:
+		return "up"
+	else:
+		return "down"
+
 #	if left:
 #		rf=false
 #		return _walk_free()
@@ -497,18 +494,39 @@ func _walk_free():
 #	if down:
 #		uf=false
 #		return _walk_free()
-	if randf()>=0.5:
-		if randf()>0.5:
-			return "left"
-		else:
-			return "right"
-	elif randf()>=0.5: 
-		if randf()>0.5:
-			return "up"
-		else: 
-			return "down"
+#	if randf()>=0.5:
+#		if randf()>0.5:
+#			return "left"
+#		else:
+#			return "right"
+#	elif randf()>=0.5: 
+#		if randf()>0.5:
+#			return "up"
+#		else: 
+#			return "down"
 	pass
 
+func random_bifurcation_by_three(one, two, three):
+	var r=randf()
+	print(get_name(), ":", one_c, " ", two_c, " ", three_c)
+	if r<=0.33333333333:
+#		print(one)
+		one_c+=1
+		return one
+	elif r<=0.66666666666:
+#		print(two)
+		two_c+=1
+		return two
+	else:
+#		print(three)
+		three_c+=1
+		return three
+	print("what?")
+
+
+func random_bifurcation_by_two(one, two):
+	if randf()<=0.5: return one
+	else: return two
 
 func change_state_to(new_state):
 	for s in ["walking", "burying0", "burying1", "hanging", "falling", "dying"]:
@@ -528,5 +546,5 @@ func die():
 	queue_free()
 	pass
 
-func _draw():
-	draw_circle(Vector2(0,0), hunting_radius, Color(1,1,1,0.3)) 
+#func _draw():
+#	draw_circle(Vector2(0,0), hunting_radius, Color(1,1,1,0.3)) 
