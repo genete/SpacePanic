@@ -119,7 +119,6 @@ _update_shape_index = 0
 [node name="Platforms" type="Node2D" parent="."]
 
 transform/pos = Vector2( 1, 0 )
-__meta__ = { "_editor_collapsed":true }
 
 [node name="P1" type="Sprite" parent="Platforms"]
 
@@ -197,6 +196,18 @@ transform/pos = Vector2( 140, 152 )
 [node name="Monster 3" parent="Monsters" instance=ExtResource( 12 )]
 
 transform/pos = Vector2( 132, 56 )
+
+[node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 100, 120 )
+
+[node name="Monster 4" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 156, 120 )
+
+[node name="Monster 5" parent="Monsters" instance=ExtResource( 12 )]
+
+transform/pos = Vector2( 20, 56 )
 
 [node name="Player" parent="." instance=ExtResource( 13 )]
 

@@ -16,7 +16,11 @@ var ray_cast_fall1
 var ray_cast_fall2
 var ray_cast_monster_left
 var ray_cast_monster_right
-var ray_cast_monster_kill
+var ray_cast_monster_up
+var ray_cast_monster_down
+var ray_cast_monster_hole_left
+var ray_cast_monster_hole_right
+
 
 #States, speeds and counters
 var state={
@@ -34,7 +38,7 @@ var hanging=state["hanging"]
 var falling=state["falling"]
 var dying=state["dying"]
 
-var walk_speed=100
+var walk_speed=30
 var bury0_speed=10
 var bury1_speed=10
 var fall_speed=walk_speed*4
@@ -51,16 +55,14 @@ var hanging_counter=MAX_HANGING_COUNTER
 var hanging_sprite_counter=2
 
 #Navigation related
-var hunting_radius=40
+var hunting_radius=45
 const UPDATE_PATH_STEPS=40
 var update_path_counter=0
 var begin=Vector2()
 var end=Vector2()
 var path=[]
+var position=Vector2()
 
-var one_c=0
-var two_c=0
-var three_c=0
 
 #Walking flags
 var uf=false
@@ -102,7 +104,11 @@ func _ready():
 	ray_cast_fall2=get_node("ray_cast_fall2")
 	ray_cast_monster_left=get_node("ray_cast_monster_left")
 	ray_cast_monster_right=get_node("ray_cast_monster_right")
-	ray_cast_monster_kill=get_node("ray_cast_monster_kill")
+	ray_cast_monster_down=get_node("ray_cast_monster_down")
+	ray_cast_monster_up=get_node("ray_cast_monster_up")
+	ray_cast_monster_hole_left=get_node("ray_cast_monster_hole_left")
+	ray_cast_monster_hole_right=get_node("ray_cast_monster_hole_right")
+	position=get_random_position()
 	set_fixed_process(true)
 
 
@@ -113,7 +119,11 @@ func _fixed_process(delta):
 	var fall2_colliding=ray_cast_fall2.is_colliding()
 	var monster_left_colliding=ray_cast_monster_left.is_colliding()
 	var monster_right_colliding=ray_cast_monster_right.is_colliding()
-	var monster_kill_colliding=ray_cast_monster_kill.is_colliding()
+	var monster_up_colliding=ray_cast_monster_up.is_colliding()
+	var monster_down_colliding=ray_cast_monster_down.is_colliding()
+	var monster_hole_left_colliding=ray_cast_monster_hole_left.is_colliding()
+	var monster_hole_right_colliding=ray_cast_monster_hole_right.is_colliding()
+	var monster_kill_colliding=monster_down_colliding
 	var hole_collided=null
 	var over_a_hole=false
 
@@ -151,21 +161,21 @@ func _fixed_process(delta):
 			change_state_to("falling")
 			current_frame=poses["falling"]
 			fall_step=16
-			print("*fall step ", fall_step)
+#			print("*fall step ", fall_step)
 			holes_crossed+=1
 		if falling: 
 			if monster_kill_colliding:
-				print("monster kill colliding")
-				var monster=ray_cast_monster_kill.get_collider()
+#				print("monster kill colliding")
+				var monster=ray_cast_monster_down.get_collider()
 				if monster!=null and monster extends monster_class:
 					monster.change_state_to("dying")
-					print("to dying")
+#					print("to dying")
 					change_state_to("dying")
 			if falling and fall_step==0:
 				if holes_crossed < minimum_holes_to_die:
 					change_state_to("walking")
 				else:
-					print("to dying")
+#					print("to dying")
 					change_state_to("dying")
 
 # Update speeds state based
@@ -197,27 +207,34 @@ func _fixed_process(delta):
 			consumed_motion=0
 
 	if walking:
-		var distance=Vector2()
-#		distance=_update_path()
-#		if distance.length()>hunting_radius:
-#			dir=_walk_free()
-#		else:
-#			dir=_choose_direction_by_path()
-		dir=_walk_free()
+		if path==[]:
+			position=get_random_position()
+		var player_pos=player.get_pos()
+		var player_vector=player_pos-get_pos()
+		if player_vector.length() < hunting_radius:
+			_update_path(player_pos)
+		else:
+			_update_path(position)
+		dir=_choose_direction_by_path()
 		update_directions(dir)
-		#update()
-		if left and not monster_left_colliding:
+		if left and not monster_left_colliding and not monster_hole_left_colliding:
 			move(left_move)
-		elif right and not monster_right_colliding:
+		elif right and not monster_right_colliding and not monster_hole_right_colliding:
 			move(right_move)
-		elif up:
+		elif up and not monster_up_colliding:
 			move(up_move)
-		elif down:
+		elif down and not monster_down_colliding:
 			move(down_move)
+		else:
+			#Break out the jam looking  for other position
+			position=get_random_position()
+
 		if current_frame==poses["walking1"]:
 			current_frame=poses["walking2"]
 		else:
 			current_frame=poses["walking1"]
+		if lf and rf and not up and not df:
+			check_and_restore_floor_position()
 
 	
 	if burying1:
@@ -247,8 +264,8 @@ func _fixed_process(delta):
 			depth_counter=1
 			burying0_sprite_counter=4
 		else:
-			print("burying0 counter ", burying0_sprite_counter)
-			print("depth_counter ", depth_counter)
+#			print("burying0 counter ", burying0_sprite_counter)
+#			print("depth_counter ", depth_counter)
 			current_frame=poses["burying0"+str(burying0_sprite_counter)]
 			burying0_sprite_counter-=1
 
@@ -266,7 +283,7 @@ func _fixed_process(delta):
 	if falling:
 		fall_step+=1
 		move(down_move/4)
-		print("fall step ", fall_step)
+#		print("fall step ", fall_step)
 		if fall_step>=FALL_STEPS:
 			fall_step=0
 	
@@ -354,9 +371,9 @@ func update_directions(d):
 	down=false
 	
 
-func _update_path():
+func _update_path(target):
 	begin=get_pos()-navigation.get_pos()
-	end=player.get_pos()-navigation.get_pos()
+	end=target-navigation.get_pos()
 	var p=navigation.get_simple_path(begin, end, true)
 	path=Array(p)
 	path.invert()
@@ -381,153 +398,6 @@ func _choose_direction_by_path():
 		return dir
 	return "-"
 
-# left, right, up, down
-# lf, rf, uf, df
-func _walk_free():
-	# No way
-	if not rf and not lf and not uf and not df:
-		print("stopped")
-		return "-"
-	# one forced
-	if lf and not rf and not uf and not df:
-		return "left"
-	if not lf and rf and not uf and not df:
-		return "right"
-	if not lf and not rf and uf and not df:
-		return "up"
-	if not lf and not rf and not uf and df:
-		return "down"
-	#bifurcation by two
-	if lf and rf and not uf and not df:
-		if left:
-			return "left"
-		if right:
-			return "right"
-		return random_bifurcation_by_two("left", "right")
-	if uf and df and not rf and not lf:
-		if up:
-			return "up"
-		if down:
-			return "down"
-		return random_bifurcation_by_two("up", "down")
-	if uf and rf and not df and not lf:
-		if up:
-			return "up"
-		if right:
-			return "right"
-		return random_bifurcation_by_two("up", "right")
-	if df and rf and not uf and not lf:
-		if down:
-			return "down"
-		if right:
-			return "right"
-		return random_bifurcation_by_two("down", "right")
-	if uf and lf and not df and not rf:
-		if up:
-			return "up"
-		if left:
-			return "left"
-		return random_bifurcation_by_two("up", "left")
-	if df and lf and not uf and not rf:
-		if up:
-			return "down"
-		if left:
-			return "left"
-		return random_bifurcation_by_two("down", "left")
-	# bifurcation by three
-	if lf and rf and uf and not df:
-		if left:
-			return random_bifurcation_by_two("left", "up")
-		if right:
-			return random_bifurcation_by_two("right", "up")
-		if up or down:
-			return random_bifurcation_by_two("left", "right")
-	if lf and rf and df and not uf:
-		if left:
-			return random_bifurcation_by_two("left", "down")
-		if right:
-			return random_bifurcation_by_two("right", "down")
-		if down or up:
-			return random_bifurcation_by_two("left", "right")
-	if lf and uf and df and not rf:
-		if left or right:
-			return random_bifurcation_by_two("up", "down")
-		if up:
-			return random_bifurcation_by_two("up", "left")
-		if down:
-			return random_bifurcation_by_two("down", "left")
-	if rf and uf and df and not lf:
-		if right or left:
-			return random_bifurcation_by_two("up", "down")
-		if up:
-			return random_bifurcation_by_two("up", "right")
-		if down:
-			return random_bifurcation_by_two("down", "right")
-	# bifurcatrion by four
-	if left:
-		random_bifurcation_by_three("left", "up", "down")
-	if right:
-		random_bifurcation_by_three( "right", "up", "down")
-	if up:
-		random_bifurcation_by_three("up", "left", "right")
-	if down:
-		random_bifurcation_by_three("down", "left", "right")
-	var r=randf()
-	if r<=0.25:
-		return "left"
-	elif r<0.5:
-		return "right"
-	elif r<0.75:
-		return "up"
-	else:
-		return "down"
-
-#	if left:
-#		rf=false
-#		return _walk_free()
-#	if right:
-#		lf=false
-#		return _walk_free()
-#	if up:
-#		df=false
-#		return _walk_free()
-#	if down:
-#		uf=false
-#		return _walk_free()
-#	if randf()>=0.5:
-#		if randf()>0.5:
-#			return "left"
-#		else:
-#			return "right"
-#	elif randf()>=0.5: 
-#		if randf()>0.5:
-#			return "up"
-#		else: 
-#			return "down"
-	pass
-
-func random_bifurcation_by_three(one, two, three):
-	var r=randf()
-	print(get_name(), ":", one_c, " ", two_c, " ", three_c)
-	if r<=0.33333333333:
-#		print(one)
-		one_c+=1
-		return one
-	elif r<=0.66666666666:
-#		print(two)
-		two_c+=1
-		return two
-	else:
-#		print(three)
-		three_c+=1
-		return three
-	print("what?")
-
-
-func random_bifurcation_by_two(one, two):
-	if randf()<=0.5: return one
-	else: return two
-
 func change_state_to(new_state):
 	for s in ["walking", "burying0", "burying1", "hanging", "falling", "dying"]:
 		if s==new_state:
@@ -546,5 +416,28 @@ func die():
 	queue_free()
 	pass
 
-#func _draw():
-#	draw_circle(Vector2(0,0), hunting_radius, Color(1,1,1,0.3)) 
+func get_random_position():
+	var row=randi()%6
+	var col=randi()%192
+	return Vector2(1+col, 56+32*row)
+	pass
+
+func check_and_restore_floor_position():
+	var posy=get_pos().y
+	var found=false
+	var floor_index
+	for i in range (0,6):
+		var floory=56+32*i
+		if posy==floory:
+			found=true
+			break
+	if not found:
+		var distance=256
+		for i in range (0,6):
+			var floory=56+32*i
+			if abs(posy-floory) < distance:
+				distance=abs(posy-floory)
+				floor_index=i
+			pass
+		posy=56+32*floor_index
+		set_pos(Vector2(get_pos().x, posy))

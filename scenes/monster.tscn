@@ -47,27 +47,51 @@ cast_to = Vector2( 0, 10 )
 layer_mask = 8
 type_mask = 31
 
-[node name="ray_cast_monster_left" type="RayCast2D" parent="."]
+[node name="ray_cast_monster_hole_left" type="RayCast2D" parent="."]
 
-transform/pos = Vector2( -9, 9 )
+transform/pos = Vector2( -8, 8 )
 enabled = true
-cast_to = Vector2( 0, 6 )
+cast_to = Vector2( -2, 2 )
 layer_mask = 16
 type_mask = 31
 
-[node name="ray_cast_monster_right" type="RayCast2D" parent="."]
+[node name="ray_cast_monster_hole_right" type="RayCast2D" parent="."]
 
-transform/pos = Vector2( 9, 9 )
+transform/pos = Vector2( 8, 8 )
 enabled = true
-cast_to = Vector2( 0, 6 )
+cast_to = Vector2( 2, 2 )
 layer_mask = 16
 type_mask = 31
 
-[node name="ray_cast_monster_kill" type="RayCast2D" parent="."]
+[node name="ray_cast_monster_down" type="RayCast2D" parent="."]
 
 transform/pos = Vector2( 0, 9 )
 enabled = true
 cast_to = Vector2( 0, 1 )
+layer_mask = 16
+type_mask = 15
+
+[node name="ray_cast_monster_left" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( -8, 0 )
+enabled = false
+cast_to = Vector2( -2, 0 )
+layer_mask = 16
+type_mask = 15
+
+[node name="ray_cast_monster_right" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( 8, 0 )
+enabled = true
+cast_to = Vector2( 2, 0 )
+layer_mask = 16
+type_mask = 15
+
+[node name="ray_cast_monster_up" type="RayCast2D" parent="."]
+
+transform/pos = Vector2( -5, -9 )
+enabled = false
+cast_to = Vector2( 10, 0 )
 layer_mask = 16
 type_mask = 15
 
