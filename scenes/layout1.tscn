@@ -1,18 +1,19 @@
-[gd_scene load_steps=17 format=1]
+[gd_scene load_steps=18 format=1]
 
 [ext_resource path="res://scenes/layout1.gd" type="Script" id=1]
-[ext_resource path="res://scenes/left_wall.gd" type="Script" id=2]
-[ext_resource path="res://scenes/right_wall.gd" type="Script" id=3]
-[ext_resource path="res://images/top.png" type="Texture" id=4]
-[ext_resource path="res://images/bottom.png" type="Texture" id=5]
-[ext_resource path="res://images/platform.png" type="Texture" id=6]
-[ext_resource path="res://scenes/1floor.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scenes/2floor.tscn" type="PackedScene" id=8]
-[ext_resource path="res://scenes/3floor.tscn" type="PackedScene" id=9]
-[ext_resource path="res://scenes/4floor.tscn" type="PackedScene" id=10]
-[ext_resource path="res://scenes/5floor.tscn" type="PackedScene" id=11]
-[ext_resource path="res://scenes/monster.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/header.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/left_wall.gd" type="Script" id=3]
+[ext_resource path="res://scenes/right_wall.gd" type="Script" id=4]
+[ext_resource path="res://images/top.png" type="Texture" id=5]
+[ext_resource path="res://images/bottom.png" type="Texture" id=6]
+[ext_resource path="res://images/platform.png" type="Texture" id=7]
+[ext_resource path="res://scenes/1floor.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/2floor.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/3floor.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/4floor.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/5floor.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=13]
+[ext_resource path="res://scenes/oxigen.tscn" type="PackedScene" id=14]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -34,6 +35,8 @@ outlines = [ Vector2Array( 83, 55, 181, 55, 192, 55, 192, 57, 181, 57, 181, 87, 
 
 script/script = ExtResource( 1 )
 
+[node name="Header" parent="." instance=ExtResource( 2 )]
+
 [node name="Walls" type="Node2D" parent="."]
 
 __meta__ = { "_editor_collapsed":true }
@@ -50,7 +53,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 collision/layers = 32
 collision/mask = 0
-script/script = ExtResource( 2 )
+script/script = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/left"]
 
@@ -72,7 +75,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 collision/layers = 32
 collision/mask = 0
-script/script = ExtResource( 3 )
+script/script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/right"]
 
@@ -84,15 +87,14 @@ _update_shape_index = 0
 [node name="Top" type="Sprite" parent="."]
 
 transform/pos = Vector2( 0, 26 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 centered = false
 
 [node name="Bottom" type="Sprite" parent="."]
 
 transform/pos = Vector2( 0, 224 )
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 centered = false
-__meta__ = { "_editor_collapsed":true }
 
 [node name="bottom_body" type="StaticBody2D" parent="Bottom"]
 
@@ -119,64 +121,67 @@ _update_shape_index = 0
 [node name="Platforms" type="Node2D" parent="."]
 
 transform/pos = Vector2( 1, 0 )
+__meta__ = { "_editor_collapsed":true }
 
 [node name="P1" type="Sprite" parent="Platforms"]
 
 transform/pos = Vector2( 0, 64 )
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="P2" type="Sprite" parent="Platforms"]
 
 transform/pos = Vector2( 0, 96 )
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="P3" type="Sprite" parent="Platforms"]
 
 transform/pos = Vector2( 0, 128 )
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="P4" type="Sprite" parent="Platforms"]
 
 transform/pos = Vector2( 0, 160 )
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="P5" type="Sprite" parent="Platforms"]
 
 transform/pos = Vector2( 0, 192 )
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="Ladders" type="Node2D" parent="."]
 
 __meta__ = { "_editor_collapsed":true }
 
-[node name="1floor" parent="Ladders" instance=ExtResource( 7 )]
+[node name="1floor" parent="Ladders" instance=ExtResource( 8 )]
 
 transform/pos = Vector2( 52, 96 )
 
-[node name="2floor" parent="Ladders" instance=ExtResource( 8 )]
+[node name="2floor" parent="Ladders" instance=ExtResource( 9 )]
 
 transform/pos = Vector2( 116, 64 )
 
-[node name="3floor" parent="Ladders" instance=ExtResource( 9 )]
+[node name="3floor" parent="Ladders" instance=ExtResource( 10 )]
 
 transform/pos = Vector2( 12, 128 )
 
-[node name="4floor" parent="Ladders" instance=ExtResource( 10 )]
+[node name="4floor" parent="Ladders" instance=ExtResource( 11 )]
 
 transform/pos = Vector2( 84, 64 )
 
-[node name="5floor" parent="Ladders" instance=ExtResource( 11 )]
+[node name="5floor" parent="Ladders" instance=ExtResource( 12 )]
 
 transform/pos = Vector2( 180, 64 )
 
 [node name="Holes" type="Node2D" parent="."]
 
 [node name="Navigation2D" type="Navigation2D" parent="."]
+
+__meta__ = { "_editor_collapsed":true }
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
 
@@ -185,33 +190,11 @@ enabled = true
 
 [node name="Monsters" type="Node2D" parent="."]
 
-[node name="Monster 1" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 12, 88 )
-
-[node name="Monster 2" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 140, 152 )
-
-[node name="Monster 3" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 132, 56 )
-
-[node name="Monster" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 100, 120 )
-
-[node name="Monster 4" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 156, 120 )
-
-[node name="Monster 5" parent="Monsters" instance=ExtResource( 12 )]
-
-transform/pos = Vector2( 20, 56 )
-
 [node name="Player" parent="." instance=ExtResource( 13 )]
 
 transform/pos = Vector2( 36, 152 )
 collision/margin = 0.08
+
+[node name="Oxigen" parent="." instance=ExtResource( 14 )]
 
 

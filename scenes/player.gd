@@ -18,6 +18,9 @@ var fall_speed=walk_speed*4
 var dig_speed=15
 var consumed_motion=0
 var was_facing_a_hole=false
+var has_oxygen=true
+var dying_by_asphyxia=false
+var animation_called=false
 
 # Up down left right flags
 var uf=false
@@ -39,7 +42,9 @@ var poses={
 "climb": 4,
 "dig1" : 2,
 "dig2" : 3,
-"fall" : 5
+"fall" : 5,
+"die1" :6, 
+"die2": 7
 }
 
 var hole_class=preload("res://scenes/hole.gd")
@@ -60,7 +65,17 @@ func _ready():
 
 
 func _fixed_process(delta):
-	# Read inputs
+
+	if dying_by_asphyxia:
+		if not animation_called:
+			get_node("anim").play("die")
+			animation_called=true
+		return
+
+	if not has_oxygen and current_frame<8:
+		get_node("sprite").set_frame(current_frame+8)
+
+		# Read inputs
 	var left=Input.is_action_pressed("ui_left")
 	var right=Input.is_action_pressed("ui_right")
 	var up=Input.is_action_pressed("ui_up")
@@ -154,7 +169,7 @@ func _fixed_process(delta):
 		set_pos(Vector2(ray_cast_fall1.get_collider().get_pos().x, get_pos().y))
 		update_scale()
 		falling=true
-		get_node("sprite").set_frame(poses["fall"])
+		get_node("sprite").set_frame(get_pose_number("fall"))
 
 
 	if falling:
@@ -171,7 +186,7 @@ func _fixed_process(delta):
 				print("siding right = ", siding_right)
 				falling=false
 				speed=walk_speed
-				get_node("sprite").set_frame(poses["walk1"])
+				get_node("sprite").set_frame(get_pose_number("walk1"))
 		return
 
 
@@ -181,10 +196,10 @@ func _fixed_process(delta):
 		if siding_right:
 			siding_right=false
 			update_scale()
-		if current_frame==poses["walk1"]:
-			current_frame=poses["walk2"]
+		if current_frame==get_pose_number("walk1"):
+			current_frame=get_pose_number("walk2")
 		else:
-			current_frame=poses["walk1"]
+			current_frame=get_pose_number("walk1")
 		get_node("sprite").set_frame(current_frame)
 		move(left_move)
 		if promote_left: return
@@ -193,18 +208,18 @@ func _fixed_process(delta):
 		if not siding_right:
 			siding_right=true
 			update_scale()
-		if current_frame==poses["walk1"]:
-			current_frame=poses["walk2"]
+		if current_frame==get_pose_number("walk1"):
+			current_frame=get_pose_number("walk2")
 		else:
-			current_frame=poses["walk1"]
+			current_frame=get_pose_number("walk1")
 		get_node("sprite").set_frame(current_frame)
 
 		move(right_move)
 		if promote_right : return
 
 	if up and (not digging) and uf:
-		if not current_frame==poses["climb"]:
-			current_frame=poses["climb"]
+		if not current_frame==get_pose_number("climb"):
+			current_frame=get_pose_number("climb")
 		if not siding_right:
 			siding_right=true
 			update_scale()
@@ -215,8 +230,8 @@ func _fixed_process(delta):
 		move(up_move)
 
 	if down and (not digging) and df:
-		if not current_frame==poses["climb"]:
-			current_frame=poses["climb"]
+		if not current_frame==get_pose_number("climb"):
+			current_frame=get_pose_number("climb")
 		if not siding_right:
 			siding_right=true
 			update_scale()
@@ -233,19 +248,19 @@ func _fixed_process(delta):
 		# Now let's check if it is creating a hole or not.
 		if dig:
 			if facing_hole:
-				if current_frame==poses["dig1"]: 
+				if current_frame==get_pose_number("dig1"): 
 					# End dig pose and increase hole depth
-					current_frame=poses["dig2"]
+					current_frame=get_pose_number("dig2")
 					get_node("sprite").set_frame(current_frame)
 					hole_collided.dig()
 				else:
-					current_frame=poses["dig1"]
+					current_frame=get_pose_number("dig1")
 					get_node("sprite").set_frame(current_frame)
 					return
 			else:
 				# Drop a hole
-				if current_frame==poses["dig1"]: 
-					current_frame=poses["dig2"]
+				if current_frame==get_pose_number("dig1"):
+					current_frame=get_pose_number("dig2")
 					get_node("sprite").set_frame(current_frame)
 					var hole_instance=hole_scene.instance()
 					var holes=get_node("/root/Layout/Holes")
@@ -254,28 +269,27 @@ func _fixed_process(delta):
 					var rcf_pos=ray_cast_far.get_pos()
 					var rcn_pos=ray_cast_near.get_pos()
 					var hole_tex_height=hole_instance.get_node("Sprite").get_texture().get_height()
-					var player_tex_height=get_node("sprite").get_texture().get_height()
+					var player_tex_height=get_node("sprite").get_texture().get_height()/2
 					var hole_pos
 					if siding_right:
 						hole_pos=Vector2(player_pos.x+(rcf_pos.x+rcn_pos.x)/2, player_pos.y+(player_tex_height+hole_tex_height)/2)
 					else:
 						hole_pos=Vector2(player_pos.x-(rcf_pos.x+rcn_pos.x)/2, player_pos.y+(player_tex_height+hole_tex_height)/2)
-					print (hole_pos)
 					hole_instance.set_pos(hole_pos)
 					return
 				else:
 					# Start dig pose
-					current_frame=poses["dig1"]
+					current_frame=get_pose_number("dig1")
 					get_node("sprite").set_frame(current_frame)
 					return
 		if bury:
 			if facing_hole:
-				if current_frame==poses["dig2"]:
-					current_frame=poses["dig1"]
+				if current_frame==get_pose_number("dig2"):
+					current_frame=get_pose_number("dig1")
 					get_node("sprite").set_frame(current_frame)
 					hole_collided.bury()
 				else:
-					current_frame=poses["dig2"]
+					current_frame=get_pose_number("dig2")
 					get_node("sprite").set_frame(current_frame)
 					return
 
@@ -292,3 +306,16 @@ func enable_ray_casts(enabled):
 	get_node("ray_cast_hole").set_enabled(enabled)
 	get_node("ray_cast_fall1").set_enabled(enabled)
 	get_node("ray_cast_fall2").set_enabled(enabled)
+
+func callback_oxygen_finished():
+	has_oxygen=false
+	
+func callback_player_died_asphyxiated():
+	dying_by_asphyxia=true
+	pass
+
+func get_pose_number(pose):
+	if has_oxygen:
+		return poses[pose]
+	else:
+		return poses[pose]+8

@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=1]
+
+[ext_resource path="res://fonts/spacepanic.fnt" type="Font" id=1]
+
+[node name="Header" type="Node2D"]
+
+[node name="UNIVERSAL" type="Label" parent="."]
+
+margin/left = 65.0
+margin/top = 7.0
+margin/right = 135.0
+margin/bottom = 15.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "UNIVERSAL"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="1ST" type="Label" parent="."]
+
+margin/left = 24.0
+margin/top = 7.0
+margin/right = 46.0
+margin/bottom = 15.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 0.654902, 1 )
+text = "1ST"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="2ND" type="Label" parent="."]
+
+margin/left = 152.0
+margin/top = 7.0
+margin/right = 176.0
+margin/bottom = 15.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 0.654902, 1 )
+text = "2ND"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="1POINTS" type="Label" parent="."]
+
+margin/left = 16.0
+margin/top = 16.0
+margin/right = 56.0
+margin/bottom = 24.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+text = "00"
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="2POINTS" type="Label" parent="."]
+
+margin/left = 144.0
+margin/top = 16.0
+margin/right = 184.0
+margin/bottom = 24.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+text = "00"
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+
