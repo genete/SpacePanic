@@ -86,4 +86,21 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
+[node name="HIPOINTS" type="Label" parent="."]
+
+margin/left = 80.0
+margin/top = 16.0
+margin/right = 120.0
+margin/bottom = 24.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+text = "3400"
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
 

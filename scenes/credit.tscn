@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=1]
+
+[ext_resource path="res://fonts/spacepanic.fnt" type="Font" id=1]
+
+[node name="Credit" type="Node2D"]
+
+[node name="Credit" type="Label" parent="."]
+
+margin/left = 120.0
+margin/top = 240.0
+margin/right = 166.0
+margin/bottom = 248.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0, 1, 0.654902, 1 )
+text = "CREDIT"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="Value" type="Label" parent="."]
+
+margin/left = 176.0
+margin/top = 240.0
+margin/right = 192.0
+margin/bottom = 248.0
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "00"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+

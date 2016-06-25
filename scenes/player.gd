@@ -61,6 +61,7 @@ func _ready():
 	ray_cast_fall2=get_node("ray_cast_fall2")
 	ray_cast_monster=get_node("ray_cast_monster")
 	set_fixed_process(true)
+	var animation=Animation.new()
 	pass
 
 
@@ -70,6 +71,9 @@ func _fixed_process(delta):
 		if not animation_called:
 			get_node("anim").play("die")
 			animation_called=true
+		else:
+			if not get_node("anim").is_playing():
+				print("change scene here")
 		return
 
 	if not has_oxygen and current_frame<8:

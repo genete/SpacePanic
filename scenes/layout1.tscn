@@ -95,6 +95,7 @@ centered = false
 transform/pos = Vector2( 0, 224 )
 texture = ExtResource( 6 )
 centered = false
+__meta__ = { "_editor_collapsed":true }
 
 [node name="bottom_body" type="StaticBody2D" parent="Bottom"]
 
@@ -193,7 +194,6 @@ enabled = true
 [node name="Player" parent="." instance=ExtResource( 13 )]
 
 transform/pos = Vector2( 36, 152 )
-collision/margin = 0.08
 
 [node name="Oxigen" parent="." instance=ExtResource( 14 )]
 
