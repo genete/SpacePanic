@@ -194,6 +194,7 @@ enabled = true
 [node name="Player" parent="." instance=ExtResource( 13 )]
 
 transform/pos = Vector2( 36, 152 )
+collision/margin = 0.08
 
 [node name="Oxigen" parent="." instance=ExtResource( 14 )]
 

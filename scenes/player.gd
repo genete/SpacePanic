@@ -22,6 +22,8 @@ var has_oxygen=true
 var dying_by_asphyxia=false
 var animation_called=false
 
+var falling_time=0
+
 # Up down left right flags
 var uf=false
 var df=false
@@ -178,6 +180,7 @@ func _fixed_process(delta):
 
 	if falling:
 		fall_step+=1
+		falling_time+=delta
 #		print(fall_step)
 		move(down_move/4)
 		if fall_step>=FALL_STEPS:
@@ -189,6 +192,8 @@ func _fixed_process(delta):
 				print("falling false")
 				print("siding right = ", siding_right)
 				falling=false
+				print("falling time=", falling_time)
+				falling_time=0
 				speed=walk_speed
 				get_node("sprite").set_frame(get_pose_number("walk1"))
 		return

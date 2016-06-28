@@ -25,7 +25,7 @@ const WIDTH=24
 var oxygen
 var started
 
-const BREATH_TIME=2/25.0
+const BREATH_TIME=20/25.0
 var passed_time=0
 
 signal oxygen_out
