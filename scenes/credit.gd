@@ -1,25 +1,16 @@
 
 extends Node2D
 
-var read_time=0
-const MAX_READ_TIME=0.3
-
 func _ready():
-	set_process(true)
-	pass
-
-func _process(delta):
-	var add_credit=Input.is_action_pressed("add_credit")
+	set_process_input(true)
 	update_credit_value()
-	if read_time < MAX_READ_TIME:
-		read_time+=delta
-		return
-	else:
-		read_time=0
-	if add_credit:
+
+func _input(event):
+	if event.is_action_pressed("add_credit") and not event.is_echo():
 		get_node("/root/global").credits+=1
-	pass
+		update_credit_value()
+		if get_parent().get_name()!="Push_Start":
+			get_node("/root/global").goto_scene("res://scenes/push_start.tscn")
 
 func update_credit_value():
 	get_node("Value").set_text(str(get_node("/root/global").credits).pad_zeros(2))
-	pass

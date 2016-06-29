@@ -4,6 +4,8 @@ var player1_points=0
 var player2_points=0
 var hi_points=3600
 var credits=0
+var player1_lives=3
+var player2_lives=3
 
 var current_scene = null
 
